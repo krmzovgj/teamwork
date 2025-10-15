@@ -1,4 +1,4 @@
-# 💬 Teamwork — Real-Time Chat App
+# 💬 Teamwork - Real-Time Chat App
 
 ![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js)
 ![Express](https://img.shields.io/badge/Express-5.1.0-black?logo=express)

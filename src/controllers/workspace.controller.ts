@@ -180,8 +180,6 @@ export const joinWorkspace = async (
     const inviteCode = req.params.inviteCode;
     const userId = req.user?.id;
 
-    console.log("ONLINE USERS MAP", Array.from(onlineUsers.entries()));
-
     if (!userId) {
         return res.status(400).json({
             message: "User id must be provided!",
@@ -231,9 +229,6 @@ export const joinWorkspace = async (
             const socket = io.sockets.sockets.get(socketId);
             if (socket) {
                 socket.join(workspace.id);
-                console.log(
-                    `${user.firstName} ${user.lastName} joined ${workspace.name} via socket ${socketId}`
-                );
             }
         });
 

@@ -31,8 +31,6 @@ io.on("connection", async (socket) => {
     socket.on("register", async (user) => {
         const userId = Number(user.id);
 
-        console.log(user)
-        
         if (!onlineUsers.has(userId)) {
             onlineUsers.set(userId, new Set());
         }
@@ -42,13 +40,24 @@ io.on("connection", async (socket) => {
             where: {
                 id: userId,
             },
+            select: {
+                workspaceId: true,
+                workspace: {
+                    select: {
+                        channels: { select: { id: true } },
+                    },
+                },
+            },
         });
 
         if (dbUser?.workspaceId) {
             socket.join(dbUser.workspaceId);
-            console.log(
-                `${dbUser.firstName} with socket ${socket.id} joined workspace ${dbUser.workspaceId}`
-            );
+            
+
+            dbUser.workspace?.channels.forEach((channel) => {
+                socket.join(channel.id.toString());
+                console.log(`Socket ${socket.id} joined ${channel.id}`);
+            });
         }
     });
 
@@ -57,8 +66,6 @@ io.on("connection", async (socket) => {
             sockets.delete(socket.id);
             if (sockets.size === 0) onlineUsers.delete(userId);
         });
-
-        console.log(`Socket ${socket.id} disconnected`);
     });
 });
 

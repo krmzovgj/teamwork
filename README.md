@@ -1,7 +1,7 @@
 <!-- prettier-ignore-start -->
 <div align="center">
 
-# 💭 Teamwork - Real‑Time Chat App
+# 💭 Teamwork: Real‑Time Chat App
 
 <img alt="Teamwork banner" src="https://img.shields.io/badge/Express-5.1.0-black?logo=express"> 
 <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript">

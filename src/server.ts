@@ -52,7 +52,7 @@ io.on("connection", async (socket) => {
 
         if (dbUser?.workspaceId) {
             socket.join(dbUser.workspaceId);
-            
+
 
             dbUser.workspace?.channels.forEach((channel) => {
                 socket.join(channel.id.toString());
@@ -72,6 +72,7 @@ io.on("connection", async (socket) => {
 app.get("/", (req, res) => {
     res.json({ message: "Server is running" });
 });
+
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);

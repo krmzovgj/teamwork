@@ -6,6 +6,7 @@ import { io } from "../server.ts";
 interface ChannelRequest extends Request {
     user?: {
         id: number;
+        workspaceId: string;
         role: UserRole;
     };
 }
@@ -121,6 +122,12 @@ export const updateChannel = async (
         });
     }
 
+    io.to(channel.workspaceId.toString()).emit("channelUpdated", {
+        channelId: channel.id,
+        name: channel.name,
+        message: `Channel ${channel.name} was updated`,
+    });
+
     res.status(200).json({
         channel,
     });
@@ -135,6 +142,7 @@ export const deleteChannel = async (
     next: NextFunction
 ) => {
     const role = req.user?.role;
+    const workspaceId = req.user?.workspaceId!;
     const channelId = parseInt(req.params.id);
 
     if (role === "MEMBER") {
@@ -158,6 +166,11 @@ export const deleteChannel = async (
             message: "Channel not found",
         });
     }
+
+    io.to(workspaceId.toString()).emit("channelDeleted", {
+        channelId: channelId,
+        message: `Channel was deleted`,
+    });
 
     res.status(200).json({
         message: "Channel deleted",

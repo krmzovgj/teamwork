@@ -1,9 +1,15 @@
-import express from 'express'
-import { verifyAccessToken } from '../middleware/auth.ts'
-import { createMessage } from '../controllers/message.controller.ts'
+import express from "express";
+import { verifyAccessToken } from "../middleware/auth.ts";
+import {
+    createMessage,
+    deleteMessage,
+    updateMessage,
+} from "../controllers/message.controller.ts";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/:channelId", verifyAccessToken, createMessage)
+router.post("/:channelId", verifyAccessToken, createMessage);
+router.put("/:id", verifyAccessToken, updateMessage);
+router.delete("/:id", verifyAccessToken, deleteMessage);
 
-export default router
+export default router;

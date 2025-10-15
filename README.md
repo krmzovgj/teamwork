@@ -1,7 +1,7 @@
 <!-- prettier-ignore-start -->
 <div align="center">
 
-# 💬 Teamwork — Real‑Time Chat App
+# 💭 Teamwork - Real‑Time Chat App
 
 <img alt="Teamwork banner" src="https://img.shields.io/badge/Express-5.1.0-black?logo=express"> 
 <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript">
@@ -10,9 +10,9 @@
 <img alt="Socket.io" src="https://img.shields.io/badge/Socket.io-Realtime-010101?logo=socketdotio">
 <img alt="Node.js" src="https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white">
 
-<p><b>Slack‑style team collaboration backend</b> with workspaces, channels, auth, and real‑time chat.</p>
+<p><b>Express backend for Slack‑style team collaboration backend</b> with workspaces, channels, auth, and real‑time chat.</p>
 
-[🧪 Postman Collection](./Teamwork.postman_collection.json) • [⚙️ Prisma Schema](#-prisma-schema-core) • [⚡ Socket Events](#-socketio-events)
+[🧪 Postman Collection](./Teamwork.postman_collection.json)
 
 </div>
 <!-- prettier-ignore-end -->
@@ -148,15 +148,35 @@ These match your Socket client console events.
 ```ts
 import { io } from "socket.io-client";
 
+// Connect to your Socket.IO server
 const socket = io("http://localhost:8080", {
-  auth: { token: "YOUR_JWT" },
+  auth: { token: "YOUR_JWT" }, // optional JWT authentication
 });
 
-socket.on("connect", () => console.log("✅ connected", socket.id));
-socket.emit("register", { id: 123 });
-socket.emit("channel:join", { channelId: 1 });
+// Fired when the connection is established
+socket.on("connect", () => {
+  console.log("✅ Connected to server:", socket.id);
 
-socket.on("newMessage", (msg) => console.log("💬", msg));
+  // Register the user
+  socket.emit("register", { id: 123 });
+
+  // Join a specific channel / room
+  socket.emit("channel:join", { channelId: 1 });
+});
+
+// Listen for new messages from the server
+socket.on("newMessage", (message) => {
+  console.log("💬 New message received:", message);
+});
+
+// Optional: Handle disconnection or errors
+socket.on("disconnect", (reason) => {
+  console.log("❌ Disconnected:", reason);
+});
+
+socket.on("connect_error", (error) => {
+  console.error("⚠️ Connection error:", error.message);
+});
 ```
 
 ---

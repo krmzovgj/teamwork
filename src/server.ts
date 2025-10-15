@@ -17,25 +17,36 @@ const PORT = process.env.PORT || 8080;
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
+export const io = new Server(server, {
     cors: {
         origin: "*",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
     },
 });
 
-io.on("connection", (socket) => {
-    console.log("User connected: ", socket.id)
+export const onlineUsers = new Map<number, Set<string>>();
 
-    socket.on("joinWorkspace", (workspaceId) => {
-        socket.join(workspaceId)
-        console.log(`User ${socket.id} joined workspace ${workspaceId}`)
-    })
+io.on("connection", (socket) => {
+    socket.on("register", (userId: number) => {
+        const id = Number(userId);
+        if (!onlineUsers.has(id)) {
+            onlineUsers.set(id, new Set());
+        }
+
+        onlineUsers.get(id)!.add(socket.id);
+
+        console.log(`User ${id} registered with socket ${socket.id}`);
+    });
 
     socket.on("disconnect", () => {
-        console.log(`User ${socket.id} disconnected`)
-    })
-})
+        onlineUsers.forEach((sockets, userId) => {
+            sockets.delete(socket.id);
+            if (sockets.size === 0) onlineUsers.delete(userId);
+        });
+
+        console.log(`Socket ${socket.id} disconnected`);
+    });
+});
 
 app.get("/", (req, res) => {
     res.json({ message: "Server is running" });
@@ -51,5 +62,5 @@ app.use("/message", messageRouter);
 app.use(errorHandler);
 
 server.listen(PORT, () => {
-    console.log(`Server is listening on http://localhost:${PORT}`)
-})
+    console.log(`Server is listening on http://localhost:${PORT}`);
+});

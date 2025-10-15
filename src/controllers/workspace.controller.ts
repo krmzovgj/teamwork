@@ -1,6 +1,7 @@
 import { UserRole, Workspace } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import prisma from "../prisma.ts";
+import { io, onlineUsers } from "../server.ts";
 
 interface WorkspaceRequest extends Request {
     user?: {
@@ -67,6 +68,23 @@ export const createWorkspace = async (
                 workspaceId: workspace.id,
             },
         });
+
+        const userSockets = onlineUsers.get(userId)
+
+        if(userSockets) {
+            userSockets.forEach(socketId => {
+                const socket = io.sockets.sockets.get(socketId)
+                if(socket) socket.join(workspace.id)
+            })
+        }
+
+        if(userSockets) {
+            io.to(Array.from(userSockets)).emit("workspaceCreated", {
+                workspaceId: workspace.id,
+                name: workspace.name,
+                message: `You created workspace ${workspace.name}`
+            })
+        }
 
         res.status(201).json({
             workspace,
@@ -152,7 +170,7 @@ export const updateWorkspace = async (
 };
 
 // @desc Join workspace
-// @route PATCH /:inviteCode
+// @route PATCH /join/:inviteCode
 
 export const joinWorkspace = async (
     req: WorkspaceRequest,
@@ -161,6 +179,8 @@ export const joinWorkspace = async (
 ) => {
     const inviteCode = req.params.inviteCode;
     const userId = req.user?.id;
+
+    console.log("ONLINE USERS MAP", Array.from(onlineUsers.entries()));
 
     if (!userId) {
         return res.status(400).json({
@@ -203,6 +223,26 @@ export const joinWorkspace = async (
             workspaceId: true,
         },
     });
+
+    const userSockets = onlineUsers.get(userId);
+
+    if (userSockets) {
+        userSockets.forEach((socketId) => {
+            const socket = io.sockets.sockets.get(socketId);
+            if (socket) {
+                socket.join(workspace.id);
+                console.log(
+                    `${user.firstName} ${user.lastName} joined ${workspace.name} via socket ${socketId}`
+                );
+            }
+        });
+
+        io.to(workspace.id).emit("userJoined", {
+            userId: user.id,
+            name: `${user.firstName} ${user.lastName}`,
+            message: `${user.firstName} joined ${workspace.name}`
+        })
+    }
 
     res.status(200).json({
         user,

@@ -27,6 +27,12 @@ export const createWorkspace = async (
             });
         }
 
+        if(!userId) {
+            return res.status(400).json({
+                messsage: "User id must be provided!"
+            })
+        }
+
         let inviteCode = "";
         let exists: Workspace | null = null;
 
@@ -143,6 +149,64 @@ export const updateWorkspace = async (
     }
 
     res.status(200).json({ workspace });
+};
+
+// @desc Join workspace
+// @route PATCH /:inviteCode
+
+export const joinWorkspace = async (
+    req: WorkspaceRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    const inviteCode = req.params.inviteCode;
+    const userId = req.user?.id;
+
+    if (!userId) {
+        return res.status(400).json({
+            message: "User id must be provided!",
+        });
+    }
+
+    if (!inviteCode) {
+        return res.status(400).json({
+            message: "Invite code must be provided!",
+        });
+    }
+
+    const workspace = await prisma.workspace.findUnique({
+        where: {
+            inviteCode
+        }
+    })
+
+    if(!workspace) {
+        return res.status(404).json({
+            message: "Workspace not found"
+        })
+    }
+
+    const user = await prisma.user.update({
+        where: {
+            id: userId,
+        },
+        data: {
+            workspaceId: workspace?.id,
+        },
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            password: false,
+            workspaceId: true,
+            role: true,
+        }
+    });
+
+    res.status(200).json({
+        user
+    })
 };
 
 // @desc Delete workspace

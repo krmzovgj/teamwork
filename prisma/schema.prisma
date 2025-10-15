@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -15,36 +14,38 @@ datasource db {
 }
 
 model User {
-  id        Int           @id @default(autoincrement())
-  firstName String
-  lastName  String
-  email     String        @unique
-  password  String
-  messages  Message[]
-  channels  ChannelUser[]
+  id          Int        @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  email       String     @unique
+  password    String
+  workspaceId String? // null = not in workspace
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+  role        UserRole   @default(MEMBER)
+  messages    Message[]
+}
+
+model Workspace {
+  id         String    @id @default(uuid())
+  name       String
+  inviteCode String    @unique
+  users      User[]
+  channels   Channel[]
+  createdAt  DateTime  @default(now())
 }
 
 model Channel {
-  id        Int           @id @default(autoincrement())
-  name      String
-  messages  Message[]
-  members   ChannelUser[]
-  createdAt DateTime      @default(now())
-}
-
-model ChannelUser {
-  id        Int         @id @default(autoincrement())
-  userId    Int
-  user      User        @relation(fields: [userId], references: [id])
-  channelId Int
-  channel   Channel     @relation(fields: [channelId], references: [id])
-  role      ChannelRole @default(MEMBER)
-  joinedAt  DateTime    @default(now())
+  id          Int       @id @default(autoincrement())
+  name        String
+  messages    Message[]
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  createdAt   DateTime  @default(now())
 }
 
 model Message {
   id        Int      @id @default(autoincrement())
-  message   String
+  content   String
   userId    Int
   User      User     @relation(fields: [userId], references: [id])
   channelId Int
@@ -52,7 +53,8 @@ model Message {
   createdAt DateTime @default(now())
 }
 
-enum ChannelRole {
+enum UserRole {
   MEMBER
   ADMIN
 }
+

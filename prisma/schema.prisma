@@ -39,7 +39,7 @@ model Channel {
   name        String
   messages    Message[]
   workspaceId String
-  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
 }
 
@@ -47,9 +47,9 @@ model Message {
   id        Int      @id @default(autoincrement())
   content   String
   userId    Int
-  User      User     @relation(fields: [userId], references: [id])
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   channelId Int
-  Channel   Channel  @relation(fields: [channelId], references: [id])
+  Channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 

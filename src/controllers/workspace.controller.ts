@@ -69,21 +69,21 @@ export const createWorkspace = async (
             },
         });
 
-        const userSockets = onlineUsers.get(userId)
+        const userSockets = onlineUsers.get(userId);
 
-        if(userSockets) {
-            userSockets.forEach(socketId => {
-                const socket = io.sockets.sockets.get(socketId)
-                if(socket) socket.join(workspace.id)
-            })
+        if (userSockets) {
+            userSockets.forEach((socketId) => {
+                const socket = io.sockets.sockets.get(socketId);
+                if (socket) socket.join(workspace.id);
+            });
         }
 
-        if(userSockets) {
+        if (userSockets) {
             io.to(Array.from(userSockets)).emit("workspaceCreated", {
                 workspaceId: workspace.id,
                 name: workspace.name,
-                message: `You created workspace ${workspace.name}`
-            })
+                message: `You created workspace ${workspace.name}`,
+            });
         }
 
         res.status(201).json({
@@ -240,13 +240,78 @@ export const joinWorkspace = async (
         io.to(workspace.id).emit("userJoined", {
             userId: user.id,
             name: `${user.firstName} ${user.lastName}`,
-            message: `${user.firstName} joined ${workspace.name}`
-        })
+            message: `${user.firstName} joined ${workspace.name}`,
+        });
     }
 
     res.status(200).json({
         user,
     });
+};
+
+// @desc Leave workspace
+// @rotue PATCH /leave/:id
+
+export const leaveWorkspace = async (
+    req: WorkspaceRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    const userId = req.user?.id;
+    const workspaceId = req.params.workspaceId;
+
+    if (!workspaceId) {
+        return res.status(400).json({
+            message: "Workspace id must be provided!",
+        });
+    }
+
+    if (!userId) {
+        return res.status(400).json({
+            message: "User id must be provided!",
+        });
+    }
+
+    const user = await prisma.user.update({
+        where: { id: userId },
+        data: {
+            workspaceId: null,
+        },
+        select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            password: false,
+            workspaceId: true,
+            role: true,
+        },
+    });
+
+    if (!user) {
+        return res.status(404).json({
+            message: "User not found",
+        });
+    }
+
+    // Get all sockets with id of the user
+    const userSockets = onlineUsers.get(userId);
+
+    if (userSockets) {
+        userSockets.forEach((socketId) => {
+            const socket = io.sockets.sockets.get(socketId);
+            if (socket) {
+                socket.leave(workspaceId);
+            }
+        });
+    }
+
+    io.to(workspaceId).emit("userLeft", {
+        userId,
+        name: `${user.firstName} ${user.lastName}`,
+        message: `${user.firstName} left the workspace`,
+    });
+
+    res.status(200).json({ user });
 };
 
 // @desc Delete workspace

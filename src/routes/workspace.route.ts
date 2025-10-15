@@ -5,6 +5,7 @@ import {
     deleteWorkspace,
     getWorkspaceById,
     joinWorkspace,
+    leaveWorkspace,
     updateWorkspace,
 } from "../controllers/workspace.controller.ts";
 
@@ -14,6 +15,7 @@ router.post("/", verifyAccessToken, createWorkspace);
 router.get("/:id", verifyAccessToken, getWorkspaceById);
 router.patch("/:id", verifyAccessToken, updateWorkspace);
 router.patch("/join/:inviteCode", verifyAccessToken, joinWorkspace)
+router.patch("/leave/:workspaceId", verifyAccessToken, leaveWorkspace)
 router.delete("/:id", verifyAccessToken, deleteWorkspace);
 
 export default router;

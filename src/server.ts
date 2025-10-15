@@ -8,6 +8,7 @@ import userRouter from "./routes/user.route.ts";
 import workspaceRouter from "./routes/workspace.route.ts";
 import channelRouter from "./routes/channel.route.ts";
 import messageRouter from "./routes/message.route.ts";
+import prisma from "./prisma.ts";
 
 const app = express();
 app.use(cors());
@@ -26,16 +27,29 @@ export const io = new Server(server, {
 
 export const onlineUsers = new Map<number, Set<string>>();
 
-io.on("connection", (socket) => {
-    socket.on("register", (userId: number) => {
-        const id = Number(userId);
-        if (!onlineUsers.has(id)) {
-            onlineUsers.set(id, new Set());
+io.on("connection", async (socket) => {
+    socket.on("register", async (user) => {
+        const userId = Number(user.id);
+
+        console.log(user)
+        
+        if (!onlineUsers.has(userId)) {
+            onlineUsers.set(userId, new Set());
         }
+        onlineUsers.get(userId)!.add(socket.id);
 
-        onlineUsers.get(id)!.add(socket.id);
+        const dbUser = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        });
 
-        console.log(`User ${id} registered with socket ${socket.id}`);
+        if (dbUser?.workspaceId) {
+            socket.join(dbUser.workspaceId);
+            console.log(
+                `${dbUser.firstName} with socket ${socket.id} joined workspace ${dbUser.workspaceId}`
+            );
+        }
     });
 
     socket.on("disconnect", () => {

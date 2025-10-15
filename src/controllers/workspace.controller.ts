@@ -2,15 +2,15 @@ import { UserRole, Workspace } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import prisma from "../prisma.ts";
 
-// @desc Create a workspace
-// @route POST /
-
 interface WorkspaceRequest extends Request {
     user?: {
         id: number;
         role: UserRole;
     };
 }
+
+// @desc Create a workspace
+// @route POST /
 
 export const createWorkspace = async (
     req: WorkspaceRequest,
@@ -57,7 +57,7 @@ export const createWorkspace = async (
                 id: userId,
             },
             data: {
-                role: "ADMIN",
+                role: "OWNER",
                 workspaceId: workspace.id,
             },
         });
@@ -68,6 +68,39 @@ export const createWorkspace = async (
     } catch (error) {
         next(error);
     }
+};
+
+// @desc Get Workspace by Id
+// route GET /:id
+
+export const getWorkspaceById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const workspaceId = req.params.id;
+
+    if (!workspaceId) {
+        return res.status(400).json({
+            message: "Workspace id must be provided!",
+        });
+    }
+
+    const workspace = await prisma.workspace.findUnique({
+        where: {
+            id: workspaceId,
+        },
+    });
+
+    if (!workspace) {
+        return res.status(404).json({
+            message: "Workspace not found",
+        });
+    }
+
+    res.status(200).json({
+        workspace,
+    });
 };
 
 // @desc Update Workspace
@@ -82,9 +115,9 @@ export const updateWorkspace = async (
     const workspaceId = req.params.id;
     const { name } = req.body;
 
-    if (role !== "ADMIN") {
+    if (role === "MEMBER") {
         return res.status(401).json({
-            message: "Premission Denied",
+            message: "Premission denied",
         });
     }
 
@@ -110,4 +143,44 @@ export const updateWorkspace = async (
     }
 
     res.status(200).json({ workspace });
+};
+
+// @desc Delete workspace
+// @route DELETE /:id
+
+export const deleteWorkspace = async (
+    req: WorkspaceRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    const role = req.user?.role;
+    const workspaceId = req.params.id;
+
+    if (role === "MEMBER") {
+        return res.status(401).json({
+            message: "Premission denied",
+        });
+    }
+
+    if (!workspaceId) {
+        return res.status(400).json({
+            message: "Workspace id must be provided!",
+        });
+    }
+
+    const workspace = await prisma.workspace.delete({
+        where: {
+            id: workspaceId,
+        },
+    });
+
+    if (!workspace) {
+        return res.status(404).json({
+            message: "Workspace not found",
+        });
+    }
+
+    res.status(200).json({
+        message: "Workspace deleted",
+    });
 };

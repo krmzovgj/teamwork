@@ -56,5 +56,6 @@ model Message {
 enum UserRole {
   MEMBER
   ADMIN
+  OWNER
 }
 

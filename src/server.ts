@@ -1,9 +1,10 @@
 import express from "express";
 import { Server } from "socket.io";
 import errorHandler from "./middleware/error-handler.ts";
-import authRouter from "./routes//auth.routes.ts";
+import authRouter from "./routes/auth.route.ts";
 import userRouter from "./routes/user.route.ts";
 import workspaceRouter from './routes/workspace.route.ts'
+import channelRouter from './routes/channel.route.ts'
 
 const app = express();
 
@@ -34,7 +35,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/workspace", workspaceRouter)
+app.use("/channel", channelRouter)
 
 // Use error handler middleware
-
 app.use(errorHandler);

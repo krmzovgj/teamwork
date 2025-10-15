@@ -27,10 +27,10 @@ export const createWorkspace = async (
             });
         }
 
-        if(!userId) {
+        if (!userId) {
             return res.status(400).json({
-                messsage: "User id must be provided!"
-            })
+                messsage: "User id must be provided!",
+            });
         }
 
         let inviteCode = "";
@@ -176,14 +176,14 @@ export const joinWorkspace = async (
 
     const workspace = await prisma.workspace.findUnique({
         where: {
-            inviteCode
-        }
-    })
+            inviteCode,
+        },
+    });
 
-    if(!workspace) {
+    if (!workspace) {
         return res.status(404).json({
-            message: "Workspace not found"
-        })
+            message: "Workspace not found",
+        });
     }
 
     const user = await prisma.user.update({
@@ -199,14 +199,14 @@ export const joinWorkspace = async (
             lastName: true,
             email: true,
             password: false,
-            workspaceId: true,
             role: true,
-        }
+            workspaceId: true,
+        },
     });
 
     res.status(200).json({
-        user
-    })
+        user,
+    });
 };
 
 // @desc Delete workspace

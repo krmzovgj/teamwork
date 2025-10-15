@@ -31,6 +31,8 @@ export const getUserById = async (req: Request, res: Response) => {
             lastName: true,
             email: true,
             password: false,
+            role: true,
+            workspaceId: true
         },
     });
 
@@ -51,7 +53,7 @@ export const updateUser = async (
 ) => {
     const currentEmail = req.user?.email;
     const userId = parseInt(req.params.id);
-    const { firstName, lastName, email } = req.body;
+    const { firstName, lastName, email, role } = req.body;
 
     if (!userId) {
         res.status(400).json({
@@ -67,7 +69,17 @@ export const updateUser = async (
             firstName,
             lastName,
             email: email,
+            role
         },
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            password: false,
+            role: true,
+            workspaceId: true
+        }
     });
 
     if (!user) {

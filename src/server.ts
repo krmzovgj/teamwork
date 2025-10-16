@@ -8,6 +8,7 @@ import userRouter from "./routes/user.route.ts";
 import workspaceRouter from "./routes/workspace.route.ts";
 import channelRouter from "./routes/channel.route.ts";
 import messageRouter from "./routes/message.route.ts";
+import taskRouter from './routes/task.route.ts'
 import prisma from "./prisma.ts";
 
 const app = express();
@@ -79,6 +80,7 @@ app.use("/user", userRouter);
 app.use("/workspace", workspaceRouter);
 app.use("/channel", channelRouter);
 app.use("/message", messageRouter);
+app.use("/task", taskRouter)
 
 // Use error handler middleware
 app.use(errorHandler);

@@ -21,8 +21,9 @@ model User {
   password    String
   workspaceId String? // null = not in workspace
   workspace   Workspace? @relation(fields: [workspaceId], references: [id])
-  role        UserRole   @default(MEMBER)
   messages    Message[]
+  tasks Task[]
+  role        UserRole   @default(MEMBER)
 }
 
 model Workspace {
@@ -40,6 +41,7 @@ model Channel {
   messages    Message[]
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  tasks Task[]
   createdAt   DateTime  @default(now())
 }
 
@@ -54,9 +56,33 @@ model Message {
   updatedAt DateTime @updatedAt
 }
 
+model Task {
+  id Int @unique @default(autoincrement())
+  name String
+  assigneeId Int?
+  assignee User? @relation(fields: [assigneeId], references: [id])
+  channelId Int
+  channel Channel @relation(fields: [channelId], references: [id])
+  priority TaskPriority @default(MEDIUM)
+  status TaskStatus @default(TO_DO)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+}
+
 enum UserRole {
   MEMBER
   ADMIN
   OWNER
 }
 
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGI
+}
+
+enum TaskStatus {
+  TO_DO
+  IN_PROGRESS
+  DONE
+}

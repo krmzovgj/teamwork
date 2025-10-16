@@ -24,7 +24,7 @@ export const createWorkspace = async (
 
         if (!name) {
             return res.status(400).json({
-                message: "Workspace name must be provided",
+                message: "Workspace name must be provided!",
             });
         }
 
@@ -130,6 +130,7 @@ export const getWorkspaceById = async (
 // @desc Update Workspace
 // @route PATCH /:id
 
+
 export const updateWorkspace = async (
     req: WorkspaceRequest,
     res: Response,
@@ -167,6 +168,31 @@ export const updateWorkspace = async (
     }
 
     res.status(200).json({ workspace });
+};
+
+// @desc Get channels by worksapce
+// @route GET /channel/:id
+
+export const getChannelsInWorkspace = async (
+    req: WorkspaceRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    const workspaceId = req.params.id;
+
+    if (!workspaceId) {
+        return res.status(400).json({
+            message: "Workspace id must be provided!",
+        });
+    }
+
+    const channels = await prisma.channel.findMany({
+        where: {
+            workspaceId,
+        },
+    });
+
+    res.status(200).json(channels);
 };
 
 // @desc Join workspace
@@ -242,6 +268,40 @@ export const joinWorkspace = async (
     res.status(200).json({
         user,
     });
+};
+
+// @desc Get users in workspace
+// @route GET /users/:id
+
+export const getUsersInWorkspace = async (
+    req: WorkspaceRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    const workspaceId = req.params.id;
+
+    if (!workspaceId) {
+        return res.status(400).json({
+            message: "Workspace id must be provided!",
+        });
+    }
+
+    const users = await prisma.user.findMany({
+        where: {
+            workspaceId,
+        },
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            workspaceId: true,
+            password: false,
+            role: true,
+        },
+    });
+
+    res.status(200).json(users);
 };
 
 // @desc Leave workspace

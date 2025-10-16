@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { io } from "../server.ts";
-
-// @desc Create a message
-// @route POST /:channelId
+import prisma from "../prisma.ts";
 
 interface MessageRequest extends Request {
     user?: {
         id: number;
     };
 }
+
+// @desc Create a message
+// @route POST /:channelId
 
 export const createMessage = async (
     req: MessageRequest,
@@ -21,13 +22,13 @@ export const createMessage = async (
 
     if (!channelId) {
         return res.status(400).json({
-            message: "Channel id must be provided",
+            message: "Channel id must be provided!",
         });
     }
 
     if (!userId) {
         return res.status(400).json({
-            message: "User id must be provided",
+            message: "User id must be provided!",
         });
     }
 

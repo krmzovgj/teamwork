@@ -80,8 +80,7 @@ export const createWorkspace = async (
 
         if (userSockets) {
             io.to(Array.from(userSockets)).emit("workspaceCreated", {
-                workspaceId: workspace.id,
-                name: workspace.name,
+                workspace,
                 message: `You created workspace ${workspace.name}`,
             });
         }
@@ -259,8 +258,7 @@ export const joinWorkspace = async (
         });
 
         io.to(workspace.id).emit("userJoined", {
-            userId: user.id,
-            name: `${user.firstName} ${user.lastName}`,
+            user,
             message: `${user.firstName} joined ${workspace.name}`,
         });
     }
@@ -361,8 +359,7 @@ export const leaveWorkspace = async (
     }
 
     io.to(workspaceId).emit("userLeft", {
-        userId,
-        name: `${user.firstName} ${user.lastName}`,
+        user,
         message: `${user.firstName} left the workspace`,
     });
 

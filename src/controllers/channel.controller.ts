@@ -2,6 +2,7 @@ import { UserRole } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import prisma from "../prisma.ts";
 import { io } from "../server.ts";
+import { channel } from "diagnostics_channel";
 
 interface ChannelRequest extends Request {
     user?: {
@@ -14,45 +15,52 @@ interface ChannelRequest extends Request {
 // @desc Get tasks in channel
 // @route /GET /tasks/:id
 
-export const getTasksInChannel = async (req: ChannelRequest, res: Response, next: NextFunction) => {
-    const channelId = parseInt(req.params.id)
+export const getTasksInChannel = async (
+    req: ChannelRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    const channelId = parseInt(req.params.id);
 
-    if(!channelId) {
+    if (!channelId) {
         return res.status(400).json({
-            message: "Channel id must be provided!"
-        })
+            message: "Channel id must be provided!",
+        });
     }
 
     const tasks = await prisma.task.findMany({
         where: {
-            channelId
-        }
-    })
+            channelId,
+        },
+    });
 
-    res.status(200).json(tasks)
-
-}
+    res.status(200).json(tasks);
+};
 
 // @desc Get messages in channel
 // @route GET /message/:id
 
-export const getMesssagesInChannel = async (req: ChannelRequest, res: Response, next: NextFunction) => {
-    const channelId = parseInt(req.params.id)
+export const getMesssagesInChannel = async (
+    req: ChannelRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    const channelId = parseInt(req.params.id);
 
-    if(!channelId) {
+    if (!channelId) {
         return res.status(400).json({
-            message: "Channel id must be provided!"
-        })
+            message: "Channel id must be provided!",
+        });
     }
 
     const messages = await prisma?.message.findMany({
         where: {
-            channelId
-        }
-    })
+            channelId,
+        },
+    });
 
-    res.status(200).json(messages)
-}
+    res.status(200).json(messages);
+};
 
 // @desc Create channel
 // @route POST /:workspaceId
@@ -90,8 +98,7 @@ export const createChannel = async (
     });
 
     io.to(workspaceId.toString()).emit("channelCreated", {
-        channelId: channel.id,
-        name: channel.name,
+        channel,
         message: `Channel ${channel.name} has been created`,
     });
 
@@ -166,8 +173,7 @@ export const updateChannel = async (
     }
 
     io.to(channel.workspaceId.toString()).emit("channelUpdated", {
-        channelId: channel.id,
-        name: channel.name,
+        channel,
         message: `Channel ${channel.name} was updated`,
     });
 
@@ -211,7 +217,7 @@ export const deleteChannel = async (
     }
 
     io.to(workspaceId.toString()).emit("channelDeleted", {
-        channelId: channelId,
+        channelId: deletedChannel.id,
         message: `Channel was deleted`,
     });
 

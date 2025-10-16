@@ -56,14 +56,8 @@ export const createMessage = async (
     }
 
     io.to(channelId.toString()).emit("newMessage", {
-        messageId: message?.id,
-        content: message?.content,
-        channelId: message?.channelId,
-        user: {
-            id: message?.User.id,
-            name: `${message?.User.firstName} ${message?.User.lastName}`,
-        },
-        createdAt: message?.createdAt,
+        message,
+        msg: "New message sent"
     });
 
     res.status(201).json({
@@ -123,9 +117,8 @@ export const updateMessage = async (
     }
 
     io.to(message.Channel.id.toString()).emit("messageUpdated", {
-        messageId: message.id,
-        name: message.content,
-        message: `Message updated`,
+        message,
+        msg: "Message updated",
     });
 
     res.status(200).json({
@@ -176,8 +169,7 @@ export const deleteMessage = async (
 
     io.to(deletedMessage.channelId.toString()).emit("messageDeleted", {
         messageId: deletedMessage.id,
-        name: deletedMessage.content,
-        message: `Message Deleted`,
+        msg: "Message Deleted",
     });
 
     res.status(200).json({

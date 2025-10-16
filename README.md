@@ -91,21 +91,6 @@ Server: **http://localhost:8080**
 | `POST` | `/auth/create-account` | Create Account |
 | `POST` | `/auth/sign-in` | Sign In |
 
-### 📁 Channel
-| Method | Path | Name |
-|---|---|---|
-| `POST` | `/channel/:workspaceId` | Create Channel |
-| `GET` | `/channel/:id` | Get Channel By Id |
-| `PATCH` | `/channel/:id` | Update Channel |
-| `DELETE` | `/channel/:id` | Delete Channel |
-
-### 📁 Message
-| Method | Path | Name |
-|---|---|---|
-| `POST` | `/message/:channelId` | Create Message |
-| `PUT` | `/message/:id` | Update Message |
-| `DELETE` | `/message/:id` | Delete Message |
-
 ### 📁 User
 | Method | Path | Name |
 |---|---|---|
@@ -122,6 +107,21 @@ Server: **http://localhost:8080**
 | `PATCH` | `/workspace/join/:inviteCode` | Join Workspace |
 | `PATCH` | `/workspace/leave/:id` | Leave Workspace |
 | `DELETE` | `/workspace/:id` | Delete Workspace |
+
+### 📁 Channel
+| Method | Path | Name |
+|---|---|---|
+| `POST` | `/channel/:workspaceId` | Create Channel |
+| `GET` | `/channel/:id` | Get Channel By Id |
+| `PATCH` | `/channel/:id` | Update Channel |
+| `DELETE` | `/channel/:id` | Delete Channel |
+
+### 📁 Message
+| Method | Path | Name |
+|---|---|---|
+| `POST` | `/message/:channelId` | Create Message |
+| `PUT` | `/message/:id` | Update Message |
+| `DELETE` | `/message/:id` | Delete Message |
 
 > 📝 Tip: After signing in, add the JWT as a **Bearer token** in Postman for all protected routes.
 

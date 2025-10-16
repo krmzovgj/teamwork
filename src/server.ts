@@ -50,7 +50,7 @@ io.on("connection", async (socket) => {
                 },
             },
         });
-
+        
         if (dbUser?.workspaceId) {
             socket.join(dbUser.workspaceId);
 
@@ -61,6 +61,7 @@ io.on("connection", async (socket) => {
             });
         }
     });
+    
 
     socket.on("disconnect", () => {
         onlineUsers.forEach((sockets, userId) => {

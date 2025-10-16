@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { io } from "../server.ts";
 
 // @desc Create Task
 // @route POST /:channelId
@@ -23,16 +24,15 @@ export const createTask = async (
             priority,
             channelId,
         },
-        select: {
-            id: true,
-            name: true,
+        include: {
             assignee: true,
-            assigneeId: true,
-            status: true,
-            priority: true,
-
             channel: true,
         },
+    });
+
+    io.to(channelId.toString()).emit("newTask", {
+        task,
+        message: `New task created in channel ${task?.channel.name}`,
     });
 
     res.status(201).json({
@@ -57,34 +57,51 @@ export const updateTask = async (
         });
     }
 
-    console.log(channelId);
-
-    const updatedTask = await prisma?.task.update({
-        where: {
-            id: taskId,
-        },
-        data: {
-            name,
-            status,
-            priority,
-            assignee: assigneeId
-                ? { connect: { id: assigneeId } }
-                : { disconnect: true },
-            channel: {
-                connect: { id: channelId },
+    try {
+        const updatedTask = await prisma?.task.update({
+            where: {
+                id: taskId,
             },
-        },
-    });
+            data: {
+                name,
+                status,
+                priority,
+                assignee: assigneeId
+                    ? { connect: { id: assigneeId } }
+                    : { disconnect: true },
+                channel: {
+                    connect: { id: channelId },
+                },
+            },
+            select: {
+                id: true,
+                name: true,
+                priority: true,
+                status: true,
+                assigneeId: true,
+                channelId: true,
+                createdAt: true,
+                updatedAt: true,
+                channel: { select: { id: true, name: true } },
+                assignee: {
+                    select: { id: true, firstName: true, lastName: true },
+                },
+            },
+        });
 
-    if (!updatedTask) {
+        io.to(updatedTask!.channelId.toString()).emit("taskUpdated", {
+            task: updatedTask,
+            message: `Task updated in ${updatedTask!.channel.name}`,
+        });
+
+        res.status(200).json({
+            updatedTask,
+        });
+    } catch {
         return res.status(404).json({
             message: "Task not found",
         });
     }
-
-    res.status(200).json({
-        updatedTask,
-    });
 };
 
 // @desc Delete Task
@@ -103,19 +120,24 @@ export const deleteTask = async (
         });
     }
 
-    const deletedTask = await prisma?.task.deleteMany({
-        where: {
-            id: taskId,
-        },
-    });
+    try {
+        const deletedTask = await prisma?.task.delete({
+            where: {
+                id: taskId,
+            },
+        });
 
-    if (deletedTask?.count === 0) {
+        io.to(deletedTask!.channelId.toString()).emit("taskDeleted", {
+            taskId: deletedTask?.id,
+            message: `Task '${deletedTask!.name}' was deleted`,
+        });
+
+        res.status(200).json({
+            message: "Task deleted",
+        });
+    } catch (error) {
         return res.status(404).json({
             message: "Task not found",
         });
     }
-
-    res.status(200).json({
-        message: "Task deleted",
-    });
 };

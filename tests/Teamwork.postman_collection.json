@@ -1,0 +1,798 @@
+{
+	"info": {
+		"_postman_id": "041b4612-3c2b-43c1-8a30-6b6300c000bd",
+		"name": "Teamwork",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48976431",
+		"_collection_link": "https://krmzovgj-7562124.postman.co/workspace/Gjorgi-Krmzov's-Workspace~d036ad66-cdfc-483c-8b5c-76808987573f/collection/48976431-041b4612-3c2b-43c1-8a30-6b6300c000bd?action=share&source=collection_link&creator=48976431"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Create Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"GK\",\r\n    \"lastName\": \"Krmzov\",\r\n    \"email\": \"krmzovgjd@gmail.com\",\r\n    \"password\": \"testpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/create-account",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"create-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Gjorgi\",\r\n    \"lastName\": \"Krmzov\",\r\n    \"email\": \"krmzovgjd@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Gjorgi\",\r\n    \"lastName\": \"Krmzov\",\r\n    \"email\": \"krmzovgjd@gmail.com\"\r\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/user/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Workspace",
+			"item": [
+				{
+					"name": "Get Workspace By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/workspace/36a956b9-29ee-4266-a1e0-ed3b060f0aee",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspace",
+								"36a956b9-29ee-4266-a1e0-ed3b060f0aee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Workspace",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Krmzov's Workspace\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/workspace",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspace"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users In Workspace",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/workspace/users/b371171f-5eb4-4f4a-89a0-9f86f3708ce0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspace",
+								"users",
+								"b371171f-5eb4-4f4a-89a0-9f86f3708ce0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leave Workspace",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/workspace/leave/b371171f-5eb4-4f4a-89a0-9f86f3708ce0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspace",
+								"leave",
+								"b371171f-5eb4-4f4a-89a0-9f86f3708ce0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Workspace",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Krmzov\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/workspace/91c6b131-e4cf-4fb7-97fd-1d5d93956b05",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspace",
+								"91c6b131-e4cf-4fb7-97fd-1d5d93956b05"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Join Workspace",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/workspace/join/8WAJP5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspace",
+								"join",
+								"8WAJP5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Workspace",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/workspace/91c6b131-e4cf-4fb7-97fd-1d5d93956b05",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspace",
+								"91c6b131-e4cf-4fb7-97fd-1d5d93956b05"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Channels In Workspace",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/channel/b371171f-5eb4-4f4a-89a0-9f86f3708ce0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"channel",
+								"b371171f-5eb4-4f4a-89a0-9f86f3708ce0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Channel",
+			"item": [
+				{
+					"name": "Create Channel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"General\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/channel/36a956b9-29ee-4266-a1e0-ed3b060f0aee",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"channel",
+								"36a956b9-29ee-4266-a1e0-ed3b060f0aee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Channel By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/channel/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"channel",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Channel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Updated\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/channel/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"channel",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Messages In Channel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/message/11",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"message",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Channel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/channel/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"channel",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Message",
+			"item": [
+				{
+					"name": "Create Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"Hello message in General\",\r\n    \"userId\": 11\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/message/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"message",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Message",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/message/11",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"message",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/message/5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"message",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Create Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Create task endpoins\",\r\n    \"priority\": \"MEDIUM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/task/11",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"task",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Update task\",\r\n    \"priority\": \"LOW\",\r\n    \"status\": \"DONE\",\r\n    \"channelId\": 11,\r\n    \"assigneeId\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/task/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"task",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/task/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"task",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

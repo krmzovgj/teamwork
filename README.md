@@ -12,7 +12,7 @@
 
 <p><b>Express backend for Slack‑style team collaboration backend</b> with workspaces, channels, auth, and real‑time chat.</p>
 
-[🧪 Postman Collection](./Teamwork.postman_collection.json)
+[🧪 Postman Collection](./tests/Teamwork.postman_collection.json)
 
 </div>
 <!-- prettier-ignore-end -->
@@ -104,7 +104,9 @@ Server: **http://localhost:8080**
 | `POST` | `/workspace` | Create Workspace |
 | `GET` | `/workspace/:id` | Get Workspace By Id |
 | `PATCH` | `/workspace/:id` | Update Workspace |
+| `PATCH` | `/workspace/channel/:id` | Get Channels In Workspace |
 | `PATCH` | `/workspace/join/:inviteCode` | Join Workspace |
+| `PATCH` | `/workspace/user/:id` | Get Users In Workspace |
 | `PATCH` | `/workspace/leave/:id` | Leave Workspace |
 | `DELETE` | `/workspace/:id` | Delete Workspace |
 
@@ -114,6 +116,9 @@ Server: **http://localhost:8080**
 | `POST` | `/channel/:workspaceId` | Create Channel |
 | `GET` | `/channel/:id` | Get Channel By Id |
 | `PATCH` | `/channel/:id` | Update Channel |
+| `PATCH` | `/channel/task/:id` | Get Tasks In Channel |
+| `PATCH` | `/channel/message/:id` | Get Messages In Channel |
+| `PATCH` | `/channel/:id` | Update Channel |
 | `DELETE` | `/channel/:id` | Delete Channel |
 
 ### 📁 Message
@@ -122,6 +127,13 @@ Server: **http://localhost:8080**
 | `POST` | `/message/:channelId` | Create Message |
 | `PUT` | `/message/:id` | Update Message |
 | `DELETE` | `/message/:id` | Delete Message |
+
+### 📁 Task
+| Method | Path | Name |
+|---|---|---|
+| `POST` | `/task/:channelId` | Create Task |
+| `PATCH` | `/task/:id` | Update Task |
+| `DELETE` | `/task/:id` | Delete Task |
 
 > 📝 Tip: After signing in, add the JWT as a **Bearer token** in Postman for all protected routes.
 
@@ -143,6 +155,9 @@ These match your Socket client console events.
 | `newMessage` | Server → Client | New message created. |
 | `messageUpdated` | Server → Client | Message edited. |
 | `messageDeleted` | Server → Client | Message deleted. |
+| `newTask` | Server → Client | New Task Created. |
+| `taskUpdated` | Server → Client | Task updated. |
+| `taskDeleted` | Server → Client | Task deleted. |
 
 **Client Example**
 ```ts
@@ -192,8 +207,9 @@ model User {
   password    String
   workspaceId String? // null = not in workspace
   workspace   Workspace? @relation(fields: [workspaceId], references: [id])
-  role        UserRole   @default(MEMBER)
   messages    Message[]
+  tasks Task[]
+  role        UserRole   @default(MEMBER)
 }
 
 model Workspace {
@@ -211,6 +227,7 @@ model Channel {
   messages    Message[]
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  tasks Task[]
   createdAt   DateTime  @default(now())
 }
 
@@ -225,10 +242,35 @@ model Message {
   updatedAt DateTime @updatedAt
 }
 
+model Task {
+  id Int @unique @default(autoincrement())
+  name String
+  assigneeId Int?
+  assignee User? @relation(fields: [assigneeId], references: [id])
+  channelId Int
+  channel Channel @relation(fields: [channelId], references: [id])
+  priority TaskPriority @default(MEDIUM)
+  status TaskStatus @default(TO_DO)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+}
+
 enum UserRole {
   MEMBER
   ADMIN
   OWNER
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGI
+}
+
+enum TaskStatus {
+  TO_DO
+  IN_PROGRESS
+  DONE
 }
 ```
 
@@ -236,7 +278,7 @@ enum UserRole {
 
 ## 🧪 Postman Collection
 
-Import **Teamwork.postman_collection.json** in Postman:  
+Import **/tests/Teamwork.postman_collection.json** in Postman:  
 **Postman → Import → File → Select JSON**
 
 ---
